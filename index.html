@@ -1,0 +1,735 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Find & Learn</title>
+</head>
+  <script src="pixi/pixi.min.js"></script>
+  <script src="pixi/PIXI.TextInput.min.js"></script>
+  <script>
+    let app;
+    var noOfObjects;
+    var setupQuestions = [];
+    var setupAnswers = [];
+    var appWidth = 1900;
+    var appHeight = 1070;
+    var textObj;
+    var objArray = [];
+    var clueImagesArray = [];
+    var template1Scene;
+    var template2Scene;
+    var style;
+    var emptyClue;
+    var myAns;
+    var templateChosen;
+    window.onload = function(){
+      app = new PIXI.Application({width: appWidth, height: appHeight, backgroundColor: 0xFFFFFF});
+      document.body.appendChild(app.view);
+    }
+    PIXI.loader
+  .add("map-0.json")
+  .add("map-1.json")
+  .add("template2-1.json")
+  .add("start.png")
+  .add("title.png")
+  .add("end.png")
+  .add("Street_Lantern.png")
+  .add("papyrus.png")
+  .add("clue.jpg")
+  .add("confirm.png")
+  .add("template1.PNG")
+  .add("template2.PNG")
+  .add("Background_Template2.png")
+  .add("confirmText.png")
+  .load(setupScene);
+
+function template2() {
+
+  style = new PIXI.TextStyle({
+   dropShadowAlpha: 0.2,
+   dropShadowAngle: 0.3,
+   dropShadowBlur: 2,
+   fontFamily: "\"Lucida Sans Unicode\", \"Lucida Grande\", sans-serif",
+   fontSize: 30,
+   letterSpacing: 3,
+   miterLimit: 20,
+   stroke: "#1dc7d3",
+   strokeThickness: 2,
+   textBaseline: "bottom",
+   align: "center",
+   fontWeight: "bold"
+});
+
+  template2Scene = new PIXI.Container();
+
+  let backgroundGame =new PIXI.Sprite(PIXI.loader.resources["Background_Template2.png"].texture);
+  
+  /*emptyClue = new PIXI.Sprite(PIXI.loader.resources["clue.jpg"].texture);
+  emptyClue.height = 755;
+  emptyClue.width = 1350;
+  emptyClue.visible = false;
+
+  
+  for(var i = 0 ; i < noOfObjects; i++){
+    objArray.push(new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Bottle.png"]));
+    clueImagesArray.push(new PIXI.Sprite(PIXI.loader.resources["papyrus.png"].texture));
+  }
+
+  var clueImageX = 1280;
+
+  for(var i = 0 ; i < noOfObjects; i++){
+    clueImagesArray[i].anchor.x = 1;
+    clueImagesArray[i].anchor.y = 1;
+    clueImagesArray[i].scale.set(0.07, 0.07);
+    clueImagesArray[i].x = clueImageX - i * 60 - 10;
+    clueImagesArray[i].y = 80;
+    clueImagesArray[i].visible = false;
+  }
+  //for(var i = 0 ; i < noOfObjects; i++){
+    //objArray.push(new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Bottle.png"]));
+  //}
+  for(var i = 0 ; i < noOfObjects; i++){
+    objArray[i].anchor.x = 0.5;
+    objArray[i].anchor.y = 0.5;
+    objArray[i].scale.set(0.3, 0.3);
+    objArray[i].x = Math.floor(Math.random() * 1200) + 50;
+    objArray[i].y = Math.floor(Math.random() * 580) + 100;
+    objArray[i].visible = false;
+  }*/
+  
+  /*let fence1 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Fence_01.png"]);
+  let fence2 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Fence_02.png"]);
+  let fence3 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Fence_03.png"]);
+  let wallStart = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Wall_B_01.png"]);
+  let wall = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Wall_B_02.png"]);
+  let roof1 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Roof_A_05.png"]);
+  let roof2 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Roof_A_04.png"]);
+  let decorWindow = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Window_01.png"]);
+  let barrel = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Wooden_Barrel.png"]);
+  let cart = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Decor_Cart.png"]);
+  let chest = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Decor_Chest.png"]);
+  let lantern = new PIXI.Sprite(PIXI.loader.resources["Street_Lantern.png"].texture);*/
+
+  let ruins = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Decor_Ruins_01.png"]);
+  let statue = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Decor_Statue.png"]);
+  let ground = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Ground-Additional_03.png"]);
+  let plant = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Decor_Plant.png"]);
+  let sign = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Sign_04.png"]);
+  let rock = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Little_Wreckage.png"]);
+  let fence = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Fence.png"]);
+  let lion = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Lion_Bas_Relief.png"]);
+  let grass1 = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Grass_01.png"]);
+  let grass2 = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Grass_02.png"]);
+  let box = new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Wooden_Box.png"]);
+  
+  ruins.x = -10;
+  ruins.y = 270;
+  statue.x = 1080;
+  statue.y = 495;
+  ground.x = 450;
+  ground.y = 430;
+  plant.scale.set(0.7, 0.7);
+  plant.x = 675;
+  plant.y = 500;
+  sign.x = 990;
+  sign.y = 620;
+  box.x = 550;
+  box.y = 330;
+  lion.scale.set(0.5, 0.5);
+  lion.x = 582;
+  lion.y = 365;
+  fence.x = 750;
+  fence.y = 620;
+  rock.x = 880;
+  rock.y = 620;
+  grass1.scale.set(0.7, 0.7);
+  grass1.x = 470;
+  grass1.y = 405;
+  grass2.scale.set(0.75, 0.75);
+  grass2.x = 850;
+  grass2.y = 700;
+  
+  /*fence1.x = -10;
+  fence1.y = 620;
+  fence2.x = -10 + fence1.width;
+  fence2.y = 620;
+  fence3.x = -10 + fence1.width + fence2.width;
+  fence3.y = 620;
+  wallStart.x = fence3.x + fence3.width - 70;
+  wallStart.y = 430;
+  wall.x = 430;
+  wall.y = 430;
+  roof1.scale.set(0.75, 0.75);
+  roof2.scale.set(0.75, 0.75);
+  roof1.x = 300;
+  roof2.x = 560;
+  roof1.y = 345;
+  roof2.y = 345;
+  decorWindow.x = 500;
+  decorWindow.y = 460;
+  lantern.scale.set(0.7, 0.7);
+  lantern.anchor.x = 1;
+  lantern.x = 1360;
+  lantern.y = 415;
+  chest.scale.set(0.6, 0.6);
+  chest.x = 1050;
+  chest.y = 470;
+  chest.rotation = 0.1;
+  cart.x = 950;
+  cart.y = 495;
+  barrel.x = 800;
+  barrel.y = 620;*/
+
+  template2Scene.addChild(backgroundGame);
+  template2Scene.addChild(ruins);
+  template2Scene.addChild(statue);
+  template2Scene.addChild(ground);
+  template2Scene.addChild(plant);
+  template2Scene.addChild(sign);
+  template2Scene.addChild(rock);
+  template2Scene.addChild(fence);
+  template2Scene.addChild(box);
+  template2Scene.addChild(lion);
+  template2Scene.addChild(grass1);
+  template2Scene.addChild(grass2);
+
+  /*template1Scene.addChild(fence1);
+  template1Scene.addChild(fence2);
+  template1Scene.addChild(fence3);
+  template1Scene.addChild(wallStart);
+  template1Scene.addChild(wall);
+  template1Scene.addChild(roof1);
+  template1Scene.addChild(roof2);
+  template1Scene.addChild(decorWindow);
+  template1Scene.addChild(barrel);
+  template1Scene.addChild(chest);
+  template1Scene.addChild(cart);
+  template1Scene.addChild(lantern);*/
+  /*for(var i = 0 ; i < noOfObjects; i++){
+    template2Scene.addChild(objArray[i]);
+    template2Scene.addChild(clueImagesArray[i]);
+  }
+  template2Scene.addChild(emptyClue);*/
+  app.stage.addChild(template2Scene);
+
+}
+
+function template1() {
+
+style = new PIXI.TextStyle({
+ dropShadowAlpha: 0.2,
+ dropShadowAngle: 0.3,
+ dropShadowBlur: 2,
+ fontFamily: "\"Lucida Sans Unicode\", \"Lucida Grande\", sans-serif",
+ fontSize: 30,
+ letterSpacing: 3,
+ miterLimit: 20,
+ stroke: "#1dc7d3",
+ strokeThickness: 2,
+ textBaseline: "bottom",
+ align: "center",
+ fontWeight: "bold"
+});
+
+template1Scene = new PIXI.Container();
+
+let backgroundGame = new PIXI.Sprite(PIXI.loader.resources["map-1.json"].textures["Background_01.png"]);
+
+/*emptyClue = new PIXI.Sprite(PIXI.loader.resources["clue.jpg"].texture);
+emptyClue.height = 755;
+emptyClue.width = 1350;
+emptyClue.visible = false;
+
+
+for(var i = 0 ; i < noOfObjects; i++){
+  objArray.push(new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Bottle.png"]));
+  clueImagesArray.push(new PIXI.Sprite(PIXI.loader.resources["papyrus.png"].texture));
+}
+
+var clueImageX = 1280;
+
+for(var i = 0 ; i < noOfObjects; i++){
+  clueImagesArray[i].anchor.x = 1;
+  clueImagesArray[i].anchor.y = 1;
+  clueImagesArray[i].scale.set(0.07, 0.07);
+  clueImagesArray[i].x = clueImageX - i * 60 - 10;
+  clueImagesArray[i].y = 80;
+  clueImagesArray[i].visible = false;
+}
+//for(var i = 0 ; i < noOfObjects; i++){
+  //objArray.push(new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Bottle.png"]));
+//}
+for(var i = 0 ; i < noOfObjects; i++){
+  objArray[i].anchor.x = 0.5;
+  objArray[i].anchor.y = 0.5;
+  objArray[i].scale.set(0.3, 0.3);
+  objArray[i].x = Math.floor(Math.random() * 1200) + 50;
+  objArray[i].y = Math.floor(Math.random() * 580) + 100;
+  objArray[i].visible = false;
+}*/
+
+let fence1 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Fence_01.png"]);
+let fence2 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Fence_02.png"]);
+let fence3 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Fence_03.png"]);
+let wallStart = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Wall_B_01.png"]);
+let wall = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Wall_B_02.png"]);
+let roof1 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Roof_A_05.png"]);
+let roof2 = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Roof_A_04.png"]);
+let decorWindow = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Window_01.png"]);
+let barrel = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Wooden_Barrel.png"]);
+let cart = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Decor_Cart.png"]);
+let chest = new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Decor_Chest.png"]);
+let lantern = new PIXI.Sprite(PIXI.loader.resources["Street_Lantern.png"].texture);
+
+
+fence1.x = -10;
+fence1.y = 620;
+fence2.x = -10 + fence1.width;
+fence2.y = 620;
+fence3.x = -10 + fence1.width + fence2.width;
+fence3.y = 620;
+wallStart.x = fence3.x + fence3.width - 70;
+wallStart.y = 430;
+wall.x = 430;
+wall.y = 430;
+roof1.scale.set(0.75, 0.75);
+roof2.scale.set(0.75, 0.75);
+roof1.x = 300;
+roof2.x = 560;
+roof1.y = 345;
+roof2.y = 345;
+decorWindow.x = 500;
+decorWindow.y = 460;
+lantern.scale.set(0.7, 0.7);
+lantern.anchor.x = 1;
+lantern.x = 1360;
+lantern.y = 415;
+chest.scale.set(0.6, 0.6);
+chest.x = 1050;
+chest.y = 470;
+chest.rotation = 0.1;
+cart.x = 950;
+cart.y = 495;
+barrel.x = 800;
+barrel.y = 620;
+
+template1Scene.addChild(backgroundGame);
+template1Scene.addChild(fence1);
+template1Scene.addChild(fence2);
+template1Scene.addChild(fence3);
+template1Scene.addChild(wallStart);
+template1Scene.addChild(wall);
+template1Scene.addChild(roof1);
+template1Scene.addChild(roof2);
+template1Scene.addChild(decorWindow);
+template1Scene.addChild(barrel);
+template1Scene.addChild(chest);
+template1Scene.addChild(cart);
+template1Scene.addChild(lantern);
+/*for(var i = 0 ; i < noOfObjects; i++){
+  template1Scene.addChild(objArray[i]);
+  template1Scene.addChild(clueImagesArray[i]);
+}
+template1Scene.addChild(emptyClue);*/
+app.stage.addChild(template1Scene);
+
+}
+
+function setupScene(){
+  const editorStyle = new PIXI.TextStyle({
+    dropShadowAlpha: 0.2,
+    dropShadowAngle: 0.3,
+    dropShadowBlur: 2,
+    fontFamily: "\"Lucida Sans Unicode\", \"Lucida Grande\", sans-serif",
+    fontSize: 15,
+    letterSpacing: 3,
+    miterLimit: 20,
+    stroke: "#1dc7d3",
+    textBaseline: "bottom"
+  });
+
+  let setupScene = new PIXI.Container();
+  let confirmText = new PIXI.Sprite(PIXI.loader.resources["confirmText.png"].texture);
+  let confirmButton = new PIXI.Sprite(PIXI.loader.resources["confirm.png"].texture);
+
+  confirmText.visible = false;
+  confirmButton.visible = false;
+
+  confirmText.x = 1400;
+  confirmText.y = 815;
+
+  setupScene.addChild(confirmText);
+
+  confirmButton.interactive = true;
+  confirmButton.anchor.x = 0.5;
+  confirmButton.anchor.y = 0.5;
+  confirmButton.scale.set(0.10, 0.10);
+  confirmButton.x = 1670;
+  confirmButton.y = 840;
+
+  confirmButton.on('click', function(){
+    
+    setupScene.visible = false;
+    openScene();
+  });
+
+  let numberOfQuestionsText = new PIXI.Text('Number of questions, max 6:', editorStyle);
+  let numberOfQuestions = new PIXI.TextInput({
+      input: {
+          fontSize: '15pt',
+          width: '30px',
+          padding: '5px',
+          color: '#26272E'
+      }, 
+      box: {
+          default: {fill: 0xE8E9F3, rounded: 16, stroke: {color: 0xCBCEE0, width: 4}},
+          focused: {fill: 0xE1E3EE, rounded: 16, stroke: {color: 0xABAFC6, width: 4}},
+          disabled: {fill: 0xDBDBDB, rounded: 16}
+      }
+    });
+    numberOfQuestionsText.x = 1350;
+    numberOfQuestionsText.y = 20;
+    numberOfQuestions.x = 1650;
+    numberOfQuestions.y = 10;
+
+  
+  setupScene.addChild(numberOfQuestionsText);
+  setupScene.addChild(numberOfQuestions);
+  setupScene.addChild(confirmButton);
+
+  
+  var setupQuestionsPos = 50;
+  var setupAnswersPos = 100;
+  
+  numberOfQuestions.on('input', function(){
+   
+    setupQuestions = [];
+    setupAnswers = [];
+    noOfObjects = numberOfQuestions.text;
+   
+    
+    for(var i = 0 ; i < numberOfQuestions.text; i++){ 
+        setupQuestions.push(new PIXI.TextInput({
+          input: {
+              fontSize: '10pt',
+              padding: '10px',
+              width: '500px',
+              color: '#26272E'
+          }, 
+          box: {
+              default: {fill: 0xE8E9F3, rounded: 16, stroke: {color: 0xCBCEE0, width: 4}},
+              focused: {fill: 0xE1E3EE, rounded: 16, stroke: {color: 0xABAFC6, width: 4}},
+              disabled: {fill: 0xDBDBDB, rounded: 16}
+          }
+        }));
+        setupAnswers.push(new PIXI.TextInput({
+          input: {
+              fontSize: '10pt',
+              padding: '10px',
+              width: '500px',
+              color: '#26272E'
+          }, 
+          box: {
+              default: {fill: 0xE8E9F3, rounded: 16, stroke: {color: 0xCBCEE0, width: 4}},
+              focused: {fill: 0xE1E3EE, rounded: 16, stroke: {color: 0xABAFC6, width: 4}},
+              disabled: {fill: 0xDBDBDB, rounded: 16}
+          }
+        }));
+        setupQuestions[i].x = 1350;
+        setupQuestions[i].y = setupQuestionsPos + i * 100;
+        setupQuestions[i].placeholder = "Enter question number " + (i+1);
+        setupAnswers[i].x = 1350;
+        setupAnswers[i].y = setupAnswersPos + i * 100;
+        setupAnswers[i].placeholder = "Enter answer number " + (i+1);
+
+        setupQuestions[i].on('input', function(){
+          //console.log(setupQuestions.indexOf(this)+ " setupQuestion " +this.text);
+        });
+        setupAnswers[i].on('input', function(){
+          //console.log(setupAnswers.indexOf(this)  + " setupAnswer " + this.text);
+        });
+        confirmText.visible = true;
+        confirmButton.visible = true;
+        setupScene.addChild(setupQuestions[i]);
+        setupScene.addChild(setupAnswers[i]);
+      }
+      template1();
+      let chooseTemplateText = new PIXI.Text('Choose templates:', editorStyle);
+      let template1Icon = new PIXI.Sprite(PIXI.loader.resources["template1.PNG"].texture);
+      let template2Icon = new PIXI.Sprite(PIXI.loader.resources["template2.PNG"].texture);
+      chooseTemplateText.x = 1350;
+      chooseTemplateText.y = 650;
+      template1Icon.x = 1350;
+      template1Icon.y = 670;
+      template1Icon.scale.set(0.15, 0.15);
+      template1Icon.interactive = true;
+      template1Icon.on('click', function(){
+        templateChosen = 1;
+        template1();
+      })
+      template2Icon.x = 1650;
+      template2Icon.y = 670;
+      template2Icon.scale.set(0.15, 0.15);
+      template2Icon.interactive = true;
+      template2Icon.on('click', function(){
+        templateChosen = 2;
+        template2();
+      })
+      setupScene.addChild(chooseTemplateText);
+      setupScene.addChild(template1Icon);
+      setupScene.addChild(template2Icon);
+
+    });
+    
+    app.stage.addChild(setupScene);
+}
+
+
+function startGame(){
+
+  const styleClues = new PIXI.TextStyle({
+   dropShadowAlpha: 0.2,
+   dropShadowAngle: 0.3,
+   dropShadowBlur: 2,
+   fontFamily: "\"Lucida Sans Unicode\", \"Lucida Grande\", sans-serif",
+   fontSize: 65,
+   letterSpacing: 3,
+   miterLimit: 20,
+   stroke: "#1dc7d3",
+   textBaseline: "bottom"
+});
+
+emptyClue = new PIXI.Sprite(PIXI.loader.resources["clue.jpg"].texture);
+  emptyClue.height = 755;
+  emptyClue.width = 1350;
+  emptyClue.visible = false;
+
+  
+  for(var i = 0 ; i < noOfObjects; i++){
+    //objArray.push(new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Bottle.png"]));
+    clueImagesArray.push(new PIXI.Sprite(PIXI.loader.resources["papyrus.png"].texture));
+  }
+
+  var clueImageX = 1280;
+
+  for(var i = 0 ; i < noOfObjects; i++){
+    clueImagesArray[i].anchor.x = 1;
+    clueImagesArray[i].anchor.y = 1;
+    clueImagesArray[i].scale.set(0.07, 0.07);
+    clueImagesArray[i].x = clueImageX - i * 60 - 10;
+    clueImagesArray[i].y = 80;
+    clueImagesArray[i].visible = false;
+  }
+  for(var i = 0 ; i < noOfObjects; i++){
+    if(templateChosen == 1){
+      objArray.push(new PIXI.Sprite(PIXI.loader.resources["map-0.json"].textures["Bottle.png"]));
+    }
+    if(templateChosen == 2){
+      objArray.push(new PIXI.Sprite(PIXI.loader.resources["template2-1.json"].textures["Star.png"]));
+    }
+    
+  }
+  for(var i = 0 ; i < noOfObjects; i++){
+    objArray[i].anchor.x = 0.5;
+    objArray[i].anchor.y = 0.5;
+    objArray[i].scale.set(0.3, 0.3);
+    objArray[i].x = Math.floor(Math.random() * 1200) + 50;
+    objArray[i].y = Math.floor(Math.random() * 580) + 100;
+    objArray[i].visible = false;
+  }
+
+  var score = 0;
+  textObj = new PIXI.Text("Objects found: " + score + " / " + noOfObjects, style);
+  textObj.x = 900;
+  textObj.y = 5;
+  if(templateChosen == 1){
+    template1Scene.addChild(textObj);
+    for(var i = 0 ; i < noOfObjects; i++){
+      template1Scene.addChild(objArray[i]);
+      template1Scene.addChild(clueImagesArray[i]);
+    }
+    template1Scene.addChild(emptyClue);
+    
+  }
+  if(templateChosen == 2){
+    template2Scene.addChild(textObj);
+    for(var i = 0 ; i < noOfObjects; i++){
+      template2Scene.addChild(objArray[i]);
+      template2Scene.addChild(clueImagesArray[i]);
+    }
+    template2Scene.addChild(emptyClue);
+  }
+  
+  var clues = [];
+  for(var i = 0 ; i < noOfObjects; i++){
+    clues.push(new PIXI.Text(setupAnswers[i].text, styleClues));
+    clues[i].visible = false;
+    clues[i].anchor.x = 0.5;
+    clues[i].anchor.y = 0.5;
+    clues[i].x = 675;
+    clues[i].y = 370;
+    if(templateChosen == 1){
+      template1Scene.addChild(clues[i]);
+    }
+    if(templateChosen == 2){
+      template2Scene.addChild(clues[i]);
+    }
+    
+  }
+
+  var objectsFound = 0;
+  for(var i = 0 ; i < noOfObjects; i++){
+    console.log("making object visible");
+    objArray[i].visible = true;
+    clueImagesArray[i].visible = true;
+    objArray[i].interactive = true;
+    objArray[i].on('click', function(){
+      this.visible = false;
+      score++;
+      clueImagesArray[clueImagesArray.length - score].visible = false;
+      emptyClue.visible = true;
+      emptyClue.interactive = true;
+      clues[clueImagesArray.length - score].visible = true;
+      emptyClue.on('click', function(){
+        this.visible = false;
+        clues[clueImagesArray.length - score].visible = false;
+        textObj.text = "Objects found: " + score + " / " + noOfObjects;
+        if(score == noOfObjects){
+          if(templateChosen == 1){
+            template1Scene.visible = false;
+          }
+          if(templateChosen == 2){
+            template2Scene.visible = false;
+          }
+          gameAnswers();
+        }
+      });  
+    });
+  }
+}
+
+function gameAnswers(){
+  //here you answer questions and go to finalScene when all are correct;
+  let answersScene = new PIXI.Container();
+  let backgroundAnswers = new PIXI.Sprite(PIXI.loader.resources["map-1.json"].textures["Background_01.png"]);
+  answersScene.addChild(backgroundAnswers);
+  myAns = [];
+  var showQuestions = [];
+  var answered = 0;
+  for(var i = 0 ; i < noOfObjects; i++){
+    showQuestions.push(new PIXI.Text(setupQuestions[i].text, style));
+    showQuestions[i].anchor.x = 0.5;
+    showQuestions[i].anchor.y = 0.5;
+    showQuestions[i].x = 150;
+    showQuestions[i].y = 50 + i * 100;;
+    answersScene.addChild(showQuestions[i]);
+
+    myAns.push(new PIXI.TextInput({
+      input: {
+          fontSize: '10pt',
+          padding: '10px',
+          width: '500px',
+          color: '#26272E'
+      }, 
+      box: {
+          default: {fill: 0xE8E9F3, rounded: 16, stroke: {color: 0xCBCEE0, width: 4}},
+          focused: {fill: 0xE1E3EE, rounded: 16, stroke: {color: 0xABAFC6, width: 4}},
+          disabled: {fill: 0xDBDBDB, rounded: 16}
+      }
+    }));
+  }
+
+  for(var i = 0 ; i < noOfObjects; i++){
+    console.log(myAns[i]);
+  }
+
+  for(var i = 0 ; i < noOfObjects; i++){
+    myAns[i].x = 100;
+    myAns[i].y = 70 + i * 100;;
+
+    answersScene.addChild(myAns[i]);
+    myAns[i].on('input', function (){
+      if(this.text == setupAnswers[myAns.indexOf(this)].text){
+        answered++;
+        console.log("answered correctly "+answered);
+        if(answered == noOfObjects){
+          this.visible = false;
+          disableInputs();
+          answersScene.visible = false;
+          finalScene();
+        }
+      }
+    });
+  }
+
+  app.stage.addChild(answersScene);
+ 
+}
+
+function disableInputs(){
+  for(var i = 0; i < noOfObjects; i++){
+    myAns[i].disabled = true;
+  }
+}
+
+
+function openScene(){
+  let openScene = new PIXI.Container();
+  let backgroundOpen = new PIXI.Sprite(PIXI.loader.resources["map-1.json"].textures["Background_01.png"]);
+  let startButton = new PIXI.Sprite(PIXI.loader.resources["start.png"].texture);
+  let title = new PIXI.Sprite(PIXI.loader.resources["title.png"].texture);
+
+  title.anchor.x = 0.5;
+  title.anchor.y = 0.5;
+  title.x = 640;
+  title.y = 100;
+  title.scale.set(1.5, 1.5);
+  startButton.anchor.x = 0.5;
+  startButton.anchor.y = 0.5;
+  startButton.scale.set(0.15, 0.15);
+  startButton.x = 640;
+  startButton.y = 360;
+
+  startButton.interactive = true;
+  startButton.on('click', function(){
+    openScene.visible = false;
+    startGame();
+  });
+
+  openScene.addChild(backgroundOpen);
+  openScene.addChild(startButton);
+  openScene.addChild(title);
+
+  app.stage.addChild(openScene);
+}
+
+function finalScene(){
+  let finalScene = new PIXI.Container();
+  let finalTitle = new PIXI.Sprite(PIXI.loader.resources["end.png"].texture);
+  let backgroundFinal = new PIXI.Sprite(PIXI.loader.resources["map-1.json"].textures["Background_01.png"]);
+
+  finalTitle.anchor.x = 0.5;
+  finalTitle.anchor.y = 0.5;
+  finalTitle.x = 640;
+  finalTitle.y = 360;
+  finalTitle.scale.set(1.5, 1.5);
+
+  finalScene.addChild(backgroundFinal);
+  finalScene.addChild(finalTitle);
+  app.stage.addChild(finalScene);
+}
+
+
+
+
+</script>
+<body>
+  <script type="text/javascript">
+    let type = "WebGL"
+    if(!PIXI.utils.isWebGLSupported()){
+      type = "canvas"
+    }
+    PIXI.utils.sayHello(type)
+  </script>
+</body>
+</html>

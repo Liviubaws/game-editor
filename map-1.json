@@ -1,0 +1,52 @@
+{"frames": {
+
+"Background_01.png":
+{
+	"frame": {"x":0,"y":480,"w":1334,"h":750},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1334,"h":750},
+	"sourceSize": {"w":1334,"h":750},
+	"anchor": {"x":0,"y":0}
+},
+"Background_02.png":
+{
+	"frame": {"x":0,"y":1230,"w":1334,"h":750},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1334,"h":750},
+	"sourceSize": {"w":1334,"h":750},
+	"anchor": {"x":0,"y":0}
+},
+"Street_Lantern.png":
+{
+	"frame": {"x":0,"y":0,"w":480,"h":480},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":480,"h":480},
+	"sourceSize": {"w":480,"h":480},
+	"anchor": {"x":0,"y":0}
+},
+"Well.png":
+{
+	"frame": {"x":480,"y":0,"w":480,"h":480},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":480,"h":480},
+	"sourceSize": {"w":480,"h":480},
+	"anchor": {"x":0,"y":0}
+}},
+"animations": {
+	"Background": ["Background_01.png","Background_02.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "map-1.png",
+	"format": "RGBA8888",
+	"size": {"w":1334,"h":1980},
+	"scale": "1",
+	"related_multi_packs": [ "map-0.json" ],
+	"smartupdate": "$TexturePacker:SmartUpdate:aeb76a1af202990c0e6e69bb00e7bd08:e0448001e367c5cdf3dd129da839cbdc:72c9b60962c027db6e83b4f9a878b5bd$"
+}
+}
