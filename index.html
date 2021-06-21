@@ -6,7 +6,16 @@
 </head>
   <script src="pixi/pixi.min.js"></script>
   <script src="pixi/PIXI.TextInput.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+
   <script>
+
+
+
     let app;
     var noOfObjects;
     var setupQuestions = [];
@@ -22,6 +31,87 @@
     var emptyClue;
     var myAns;
     var templateChosen;
+    var chooseTemplateText;
+    var template1Icon;
+    var template2Icon;
+
+    var firebaseConfig = {
+      apiKey: "AIzaSyCNAPAi56r7gVKZtBP_fVe9t1HexjFToIU",
+      authDomain: "gameeditor-69af1.firebaseapp.com",
+      projectId: "gameeditor-69af1",
+      storageBucket: "gameeditor-69af1.appspot.com",
+      messagingSenderId: "960124553350",
+      appId: "1:960124553350:web:4bdc7385cd8b8ca2b1a907",
+      measurementId: "G-S47BC5XF8K"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    function writeData(){
+      firebase.database().ref('Game').set({
+        noOfQuestions: noOfObjects,
+        template: templateChosen
+      });
+      for(var i = 0 ; i < noOfObjects; i++){
+        firebase.database().ref('Game/data').push({
+          question: setupQuestions[i].text,
+          answer: setupAnswers[i].text
+        });
+      }
+    }
+
+    async function getGameData(){
+      const eventref = firebase.database().ref('Game');
+      const snapshot = await eventref.once('value');
+      const value = snapshot.val();
+      noOfObjects = value["noOfQuestions"];
+      templateChosen = value["template"];
+      //console.log(value["template"]);
+      //console.log(value["noOfQuestions"]);
+
+      const eventrefQA = firebase.database().ref('Game/data');
+      const snapshotQA = await eventrefQA.once('value');
+      const valueQA = snapshotQA.val();
+      for(var key in valueQA){
+        //console.log(valueQA[key]["question"] + " " + valueQA[key]["answer"]);
+        setupQuestions.push(valueQA[key]["question"]);
+        setupAnswers.push(valueQA[key]["answer"]);
+        
+      }
+      /*value.forEach(function(childValue){
+
+      });*/
+
+      //console.log(value);
+      /*firebase.database().ref('Game').once('value', function(snapshot){
+        snapshot.forEach(function(childSnapshot){
+          var childKey = childSnapshot.key;
+          var childData = childSnapshot.val();
+          noOfQuestions = childData["noOfQuestions"];
+          templateChosen = childData["template"];
+          noOfObjects = noOfQuestions;
+          //console.log(childData);
+        });
+      });*/
+    }
+    /*function getUsersData(username, password){
+      firebase.database().ref('Users').once('value', function(snapshot){
+        snapshot.forEach(function(childSnapshot){
+          var childKey = childSnapshot.key;
+          var childData = childSnapshot.val();
+          console.log(username + " " + childData.username);
+          console.log(password + " " + childData.password);
+          //console.log(childData);
+          if(username == childData.username && password == childData.password){
+            return childData.role;
+          }
+        });
+         return "none";
+      });
+     
+    }*/
+
     window.onload = function(){
       app = new PIXI.Application({width: appWidth, height: appHeight, backgroundColor: 0xFFFFFF});
       document.body.appendChild(app.view);
@@ -41,7 +131,78 @@
   .add("template2.PNG")
   .add("Background_Template2.png")
   .add("confirmText.png")
-  .load(setupScene);
+  .add("welcome.png")
+  .add("login.png")
+  .add("succes-create.png")
+  .load(loginScene);
+
+
+function loginScene(){
+  let loginScene = new PIXI.Container();
+  let welcome = new PIXI.Sprite(PIXI.loader.resources["welcome.png"].texture);
+  welcome.x = 500;
+  welcome.y = 300;
+  let login = new PIXI.Sprite(PIXI.loader.resources["login.png"].texture);
+  login.interactive = true;
+  login.scale.set(0.1, 0.1);
+  login.x = 650;
+  login.y = 450;
+
+  login.on('click', function(){
+    //var res = getUsersData(username.text, password.text);
+    //console.log(res);
+    if(username.text == "student" && password.text == "student"){
+      loginScene.visible = false;
+      openScene();
+    }
+    if(username.text == "admin" && password.text == "admin"){
+      loginScene.visible = false;
+      setupScene();
+    }
+  })
+
+  let username = new PIXI.TextInput({
+      input: {
+          fontSize: '15pt',
+          width: '300px',
+          padding: '5px',
+          color: '#26272E'
+      }, 
+      box: {
+          default: {fill: 0xE8E9F3, rounded: 16, stroke: {color: 0xCBCEE0, width: 4}},
+          focused: {fill: 0xE1E3EE, rounded: 16, stroke: {color: 0xABAFC6, width: 4}},
+          disabled: {fill: 0xDBDBDB, rounded: 16}
+      }
+    });
+  let password = new PIXI.TextInput({
+      input: {
+          fontSize: '15pt',
+          width: '300px',
+          padding: '5px',
+          color: '#26272E'
+      }, 
+      box: {
+          default: {fill: 0xE8E9F3, rounded: 16, stroke: {color: 0xCBCEE0, width: 4}},
+          focused: {fill: 0xE1E3EE, rounded: 16, stroke: {color: 0xABAFC6, width: 4}},
+          disabled: {fill: 0xDBDBDB, rounded: 16}
+      }
+    });
+    username.placeholder="Enter your username";
+    username.x = 500;
+    username.y = 370;
+    password.placeholder="Enter your password";
+    password.x = 500;
+    password.y = 420;
+
+    
+
+    loginScene.addChild(welcome);
+    loginScene.addChild(login);
+    loginScene.addChild(username);
+    loginScene.addChild(password);
+    app.stage.addChild(loginScene);
+}
+
 
 function template2() {
 
@@ -62,7 +223,7 @@ function template2() {
 
   template2Scene = new PIXI.Container();
 
-  let backgroundGame =new PIXI.Sprite(PIXI.loader.resources["Background_Template2.png"].texture);
+  let backgroundGame = new PIXI.Sprite(PIXI.loader.resources["Background_Template2.png"].texture);
   
   /*emptyClue = new PIXI.Sprite(PIXI.loader.resources["clue.jpg"].texture);
   emptyClue.height = 755;
@@ -336,6 +497,7 @@ app.stage.addChild(template1Scene);
 }
 
 function setupScene(){
+
   const editorStyle = new PIXI.TextStyle({
     dropShadowAlpha: 0.2,
     dropShadowAngle: 0.3,
@@ -368,9 +530,30 @@ function setupScene(){
   confirmButton.y = 840;
 
   confirmButton.on('click', function(){
-    
-    setupScene.visible = false;
-    openScene();
+    writeData();
+    //setupScene.visible = false;
+    confirmButton.visible = false;
+    confirmText.visible = false;
+    numberOfQuestions.visible = false;
+    numberOfQuestionsText.visible = false;
+    chooseTemplateText.visible = false;
+    template1Icon.visible = false;
+    template2Icon.visible = false;
+    for(var i = 0 ; i < noOfObjects; i++){
+      setupAnswers[i].visible = false;
+      setupQuestions[i].visible = false;
+    }
+    let succes = new PIXI.Sprite(PIXI.loader.resources["succes-create.png"].texture);
+    succes.x = 500;
+    succes.y = 300;
+    setupScene.addChild(succes);
+    //if(templateChosen == 1){
+      template1Scene.visible = false;
+    //}
+    if(templateChosen == 2){
+      template2Scene.visible = false;
+    }
+    //openScene();
   });
 
   let numberOfQuestionsText = new PIXI.Text('Number of questions, max 6:', editorStyle);
@@ -454,9 +637,9 @@ function setupScene(){
         setupScene.addChild(setupAnswers[i]);
       }
       template1();
-      let chooseTemplateText = new PIXI.Text('Choose templates:', editorStyle);
-      let template1Icon = new PIXI.Sprite(PIXI.loader.resources["template1.PNG"].texture);
-      let template2Icon = new PIXI.Sprite(PIXI.loader.resources["template2.PNG"].texture);
+      chooseTemplateText = new PIXI.Text('Choose templates:', editorStyle);
+      template1Icon = new PIXI.Sprite(PIXI.loader.resources["template1.PNG"].texture);
+      template2Icon = new PIXI.Sprite(PIXI.loader.resources["template2.PNG"].texture);
       chooseTemplateText.x = 1350;
       chooseTemplateText.y = 650;
       template1Icon.x = 1350;
@@ -464,8 +647,10 @@ function setupScene(){
       template1Icon.scale.set(0.15, 0.15);
       template1Icon.interactive = true;
       template1Icon.on('click', function(){
+        if(templateChosen == 2){
+          template1();
+        }
         templateChosen = 1;
-        template1();
       })
       template2Icon.x = 1650;
       template2Icon.y = 670;
@@ -487,7 +672,7 @@ function setupScene(){
 
 function startGame(){
 
-  const styleClues = new PIXI.TextStyle({
+const styleClues = new PIXI.TextStyle({
    dropShadowAlpha: 0.2,
    dropShadowAngle: 0.3,
    dropShadowBlur: 2,
@@ -499,10 +684,12 @@ function startGame(){
    textBaseline: "bottom"
 });
 
-emptyClue = new PIXI.Sprite(PIXI.loader.resources["clue.jpg"].texture);
+  emptyClue = new PIXI.Sprite(PIXI.loader.resources["clue.jpg"].texture);
   emptyClue.height = 755;
   emptyClue.width = 1350;
   emptyClue.visible = false;
+
+  
 
   
   for(var i = 0 ; i < noOfObjects; i++){
@@ -562,7 +749,8 @@ emptyClue = new PIXI.Sprite(PIXI.loader.resources["clue.jpg"].texture);
   
   var clues = [];
   for(var i = 0 ; i < noOfObjects; i++){
-    clues.push(new PIXI.Text(setupAnswers[i].text, styleClues));
+    //clues.push(new PIXI.Text(setupAnswers[i].text, styleClues));
+    clues.push(new PIXI.Text(setupAnswers[i], styleClues));
     clues[i].visible = false;
     clues[i].anchor.x = 0.5;
     clues[i].anchor.y = 0.5;
@@ -617,7 +805,8 @@ function gameAnswers(){
   var showQuestions = [];
   var answered = 0;
   for(var i = 0 ; i < noOfObjects; i++){
-    showQuestions.push(new PIXI.Text(setupQuestions[i].text, style));
+    //showQuestions.push(new PIXI.Text(setupQuestions[i].text, style));
+    showQuestions.push(new PIXI.Text(setupQuestions[i], style));
     showQuestions[i].anchor.x = 0.5;
     showQuestions[i].anchor.y = 0.5;
     showQuestions[i].x = 150;
@@ -640,16 +829,12 @@ function gameAnswers(){
   }
 
   for(var i = 0 ; i < noOfObjects; i++){
-    console.log(myAns[i]);
-  }
-
-  for(var i = 0 ; i < noOfObjects; i++){
     myAns[i].x = 100;
     myAns[i].y = 70 + i * 100;;
 
     answersScene.addChild(myAns[i]);
     myAns[i].on('input', function (){
-      if(this.text == setupAnswers[myAns.indexOf(this)].text){
+      if(this.text == setupAnswers[myAns.indexOf(this)]){
         answered++;
         console.log("answered correctly "+answered);
         if(answered == noOfObjects){
@@ -674,33 +859,45 @@ function disableInputs(){
 
 
 function openScene(){
-  let openScene = new PIXI.Container();
-  let backgroundOpen = new PIXI.Sprite(PIXI.loader.resources["map-1.json"].textures["Background_01.png"]);
-  let startButton = new PIXI.Sprite(PIXI.loader.resources["start.png"].texture);
-  let title = new PIXI.Sprite(PIXI.loader.resources["title.png"].texture);
+  getGameData().then(function(){
+    let openScene = new PIXI.Container();
+    console.log("templateChosen here " + templateChosen);
+    var backgroundOpen;
+    if(templateChosen == 1){
+      template1();
+      backgroundOpen = new PIXI.Sprite(PIXI.loader.resources["map-1.json"].textures["Background_01.png"]);
+    }
+    if(templateChosen == 2){
+      template2();
+      backgroundOpen = new PIXI.Sprite(PIXI.loader.resources["Background_Template2.png"].texture);
+    }
+    
+    let startButton = new PIXI.Sprite(PIXI.loader.resources["start.png"].texture);
+    let title = new PIXI.Sprite(PIXI.loader.resources["title.png"].texture);
 
-  title.anchor.x = 0.5;
-  title.anchor.y = 0.5;
-  title.x = 640;
-  title.y = 100;
-  title.scale.set(1.5, 1.5);
-  startButton.anchor.x = 0.5;
-  startButton.anchor.y = 0.5;
-  startButton.scale.set(0.15, 0.15);
-  startButton.x = 640;
-  startButton.y = 360;
+    title.anchor.x = 0.5;
+    title.anchor.y = 0.5;
+    title.x = 640;
+    title.y = 100;
+    title.scale.set(1.5, 1.5);
+    startButton.anchor.x = 0.5;
+    startButton.anchor.y = 0.5;
+    startButton.scale.set(0.15, 0.15);
+    startButton.x = 640;
+    startButton.y = 360;
 
-  startButton.interactive = true;
-  startButton.on('click', function(){
-    openScene.visible = false;
-    startGame();
+    startButton.interactive = true;
+    startButton.on('click', function(){
+      openScene.visible = false;
+      startGame();
+    });
+
+    openScene.addChild(backgroundOpen);
+    openScene.addChild(startButton);
+    openScene.addChild(title);
+
+    app.stage.addChild(openScene);
   });
-
-  openScene.addChild(backgroundOpen);
-  openScene.addChild(startButton);
-  openScene.addChild(title);
-
-  app.stage.addChild(openScene);
 }
 
 function finalScene(){
@@ -718,9 +915,6 @@ function finalScene(){
   finalScene.addChild(finalTitle);
   app.stage.addChild(finalScene);
 }
-
-
-
 
 </script>
 <body>
